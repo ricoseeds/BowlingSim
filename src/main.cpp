@@ -106,3 +106,18 @@ int main()
 
 	return 0;
 }
+void renderFloor(glm::mat4 model, ShaderProgram lightingShader)
+{
+	model = glm::translate(glm::mat4(1.0), modelPos[0]) * glm::scale(glm::mat4(1.0), modelScale[0]) * glm::rotate(glm::mat4(1.0), glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+	lightingShader.setUniform("model", model);
+
+	// Set material properties
+	lightingShader.setUniform("material.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
+	lightingShader.setUniformSampler("material.diffuseMap", 0);
+	lightingShader.setUniform("material.specular", glm::vec3(0.8f, 0.8f, 0.8f));
+	lightingShader.setUniform("material.shininess", 32.0f);
+
+	texture[0].bind(0); // set the texture before drawing.  Our simple OBJ mesh loader does not do materials yet.
+	mesh[0].draw();		// Render the OBJ mesh
+	texture[0].unbind(0);
+}
