@@ -24,7 +24,7 @@ bool gFlashlightOn = true;
 glm::vec4 gClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 static bool mac_moved = false;
 
-FPSCamera fpsCamera(glm::vec3(-4.159157, 7.344970, 39.236462), glm::vec3(-10.0, 5.0, 0.0));
+FPSCamera fpsCamera(glm::vec3(-4.159157, 7.344970, 39.236462), glm::vec3(-5.0, -8.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
@@ -208,11 +208,11 @@ void glfw_onFramebufferSize(GLFWwindow *window, int width, int height)
 //-----------------------------------------------------------------------------
 void glfw_onMouseScroll(GLFWwindow *window, double deltaX, double deltaY)
 {
-    // double fov = fpsCamera.getFOV() + deltaY * ZOOM_SENSITIVITY;
+    double fov = fpsCamera.getFOV() + deltaY * ZOOM_SENSITIVITY;
 
-    // fov = glm::clamp(fov, 1.0, 120.0);
+    fov = glm::clamp(fov, 1.0, 120.0);
 
-    // fpsCamera.setFOV((float)fov);
+    fpsCamera.setFOV((float)fov);
 }
 
 //-----------------------------------------------------------------------------
@@ -227,7 +227,7 @@ void update(double elapsedTime)
     glfwGetCursorPos(gWindow, &mouseX, &mouseY);
 
     // Rotate the camera the difference in mouse distance from the center screen.  Multiply this delta by a speed scaler
-    // fpsCamera.rotate((float)(gWindowWidth / 2.0 - mouseX) * MOUSE_SENSITIVITY, (float)(gWindowHeight / 2.0 - mouseY) * MOUSE_SENSITIVITY);
+    fpsCamera.rotate((float)(gWindowWidth / 2.0 - mouseX) * MOUSE_SENSITIVITY, (float)(gWindowHeight / 2.0 - mouseY) * MOUSE_SENSITIVITY);
 
     // Clamp mouse cursor to center of screen
     glfwSetCursorPos(gWindow, gWindowWidth / 2.0, gWindowHeight / 2.0);
@@ -235,22 +235,22 @@ void update(double elapsedTime)
     // Camera FPS movement
 
     // // Forward/backward
-    // if (glfwGetKey(gWindow, GLFW_KEY_W) == GLFW_PRESS)
-    //     fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getLook());
-    // else if (glfwGetKey(gWindow, GLFW_KEY_S) == GLFW_PRESS)
-    //     fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getLook());
+    if (glfwGetKey(gWindow, GLFW_KEY_W) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getLook());
+    else if (glfwGetKey(gWindow, GLFW_KEY_S) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getLook());
 
     // // Strafe left/right
-    // if (glfwGetKey(gWindow, GLFW_KEY_A) == GLFW_PRESS)
-    //     fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getRight());
-    // else if (glfwGetKey(gWindow, GLFW_KEY_D) == GLFW_PRESS)
-    //     fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getRight());
+    if (glfwGetKey(gWindow, GLFW_KEY_A) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -fpsCamera.getRight());
+    else if (glfwGetKey(gWindow, GLFW_KEY_D) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * fpsCamera.getRight());
 
     // // Up/down
-    // if (glfwGetKey(gWindow, GLFW_KEY_Z) == GLFW_PRESS)
-    //     fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
-    // else if (glfwGetKey(gWindow, GLFW_KEY_X) == GLFW_PRESS)
-    //     fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
+    if (glfwGetKey(gWindow, GLFW_KEY_Z) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
+    else if (glfwGetKey(gWindow, GLFW_KEY_X) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 //-----------------------------------------------------------------------------

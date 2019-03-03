@@ -93,12 +93,6 @@ FPSCamera::FPSCamera(glm::vec3 position, glm::vec3 target)
 	mYaw = atan2(lookDir.x, lookDir.z) + glm::pi<float>();
 	dirflag = true;
 	updateCameraVectors();
-	// glm::vec3 look;
-	// look.x = cosf(mPitch) * sinf(mYaw);
-	// look.y = sinf(mPitch);
-	// look.z = cosf(mPitch) * cosf(mYaw);
-
-	// mLook = glm::normalize(look);
 }
 
 //-----------------------------------------------------------------------------
@@ -154,7 +148,7 @@ void FPSCamera::updateCameraVectors()
 	mUp = glm::normalize(glm::cross(mRight, mLook));
 	if (!dirflag)
 	{
-		mTargetPos = mPosition + mLook;
+		mTargetPos += mPosition + mLook;
 	}
 
 	// mTargetPos = mPosition + mLook;
