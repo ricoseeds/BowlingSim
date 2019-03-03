@@ -1,7 +1,7 @@
 
 #include "../include/Camera.h"
 #include "glm/gtc/matrix_transform.hpp"
-
+#include <iostream>
 // Default camera values
 const float DEF_FOV = 45.0f; // degrees
 
@@ -25,6 +25,9 @@ Camera::Camera()
 //------------------------------------------------------------
 glm::mat4 Camera::getViewMatrix() const
 {
+	std::cout << "Inside getViewMatrix" << std::endl;
+	std::cout << glm::to_string(mPosition) << std::endl;
+	std::cout << glm::to_string(mTargetPos) << std::endl;
 	return glm::lookAt(mPosition, mTargetPos, mUp);
 }
 
@@ -69,12 +72,33 @@ const glm::vec3 &Camera::getPosition() const
 // 	mYaw = yaw;
 // 	mPitch = pitch;
 // }
-FPSCamera::FPSCamera(glm::vec3 position, glm::vec3 target, float yaw, float pitch)
+// FPSCamera::FPSCamera(glm::vec3 position, glm::vec3 target, float yaw, float pitch)
+// {
+// 	mPosition = position;
+// 	mTargetPos = target;
+// 	mYaw = yaw;
+// 	mPitch = pitch;
+// }
+FPSCamera::FPSCamera(glm::vec3 position, glm::vec3 target)
 {
 	mPosition = position;
 	mTargetPos = target;
-	mYaw = yaw;
-	mPitch = pitch;
+
+	// Calculate the vector that looks at the target from the camera position
+	// glm::vec3 lookDir = position - target;
+	glm::vec3 lookDir = target - position;
+
+	// Now Calculate the pitch and yaw from the target look vector. (radians)
+	mPitch = -atan2(lookDir.y, sqrt(lookDir.x * lookDir.x + lookDir.z * lookDir.z));
+	mYaw = atan2(lookDir.x, lookDir.z) + glm::pi<float>();
+	dirflag = true;
+	updateCameraVectors();
+	// glm::vec3 look;
+	// look.x = cosf(mPitch) * sinf(mYaw);
+	// look.y = sinf(mPitch);
+	// look.z = cosf(mPitch) * cosf(mYaw);
+
+	// mLook = glm::normalize(look);
 }
 
 //-----------------------------------------------------------------------------
@@ -128,14 +152,18 @@ void FPSCamera::updateCameraVectors()
 	// be assumed horizontal w.r.t. the world's Up vector.
 	mRight = glm::normalize(glm::cross(mLook, WORLD_UP));
 	mUp = glm::normalize(glm::cross(mRight, mLook));
+	if (!dirflag)
+	{
+		mTargetPos = mPosition + mLook;
+	}
 
-	mTargetPos = mPosition + mLook;
+	// mTargetPos = mPosition + mLook;
 }
-void FPSCamera::setLookAt(const glm::vec3 &target)
-{
-	mTargetPos = target;
-	mLook = target;
-}
+// void FPSCamera::setLookAt(const glm::vec3 &target)
+// {
+// 	mTargetPos = target;
+// 	mLook = target;
+// }
 
 //------------------------------------------------------------
 // OrbitCamera - constructor

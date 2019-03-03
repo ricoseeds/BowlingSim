@@ -4,13 +4,15 @@
 
 #include "glm/glm.hpp"
 #include "glm/gtc/constants.hpp"
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/gtx/string_cast.hpp>
 
 //--------------------------------------------------------------
 // Abstract Camera Class
 //--------------------------------------------------------------
 class Camera
 {
-public:
+  public:
 	glm::mat4 getViewMatrix() const;
 
 	virtual void setPosition(const glm::vec3 &position) {}
@@ -25,7 +27,7 @@ public:
 	float getFOV() const { return mFOV; }
 	void setFOV(float fov) { mFOV = fov; } // in degrees
 
-protected:
+  protected:
 	Camera();
 
 	virtual void updateCameraVectors() {}
@@ -50,16 +52,18 @@ protected:
 //--------------------------------------------------------------
 class FPSCamera : public Camera
 {
-public:
+  public:
 	// FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = glm::pi<float>(), float pitch = 0.0f); // (yaw) initial angle faces -Z
-	FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = glm::pi<float>(), float pitch = 0.0f);
+	FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f));
+	//   FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = glm::pi<float>(), float pitch = 0.0f);
 	virtual void setPosition(const glm::vec3 &position);
 	virtual void rotate(float yaw, float pitch); // in degrees
 	virtual void move(const glm::vec3 &offsetPos);
 	void setLookAt(const glm::vec3 &target);
 
-private:
+  private:
 	void updateCameraVectors();
+	bool dirflag = false;
 };
 
 //--------------------------------------------------------------
@@ -67,7 +71,7 @@ private:
 //--------------------------------------------------------------
 class OrbitCamera : public Camera
 {
-public:
+  public:
 	OrbitCamera();
 
 	virtual void rotate(float yaw, float pitch); // in degrees
@@ -76,7 +80,7 @@ public:
 	void setLookAt(const glm::vec3 &target);
 	void setRadius(float radius);
 
-private:
+  private:
 	void updateCameraVectors();
 
 	// Camera parameters

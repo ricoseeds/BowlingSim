@@ -70,10 +70,10 @@ int main()
 		renderFloor(model, lightingShader);
 
 		//debugging essential
-		// std::cout << "POS" << std::endl;
-		// std::cout << glm::to_string(fpsCamera.getPosition()) << std::endl;
-		// std::cout << "LOOK" << std::endl;
-		// std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
+		std::cout << "POS" << std::endl;
+		std::cout << glm::to_string(fpsCamera.getPosition()) << std::endl;
+		std::cout << "LOOK" << std::endl;
+		std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
 
 		// draw rest of the meshes
 		for (int i = 1; i < numModels; i++)
