@@ -75,21 +75,29 @@ int main()
 		std::cout << "LOOK" << std::endl;
 		std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
 
-		// draw rest of the meshes
+		// draw rest of the meshes shader is same for all
+
 		for (int i = 1; i < numModels; i++)
 		{
-
-			model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
-
-			// model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
+			if (i == 11)
+			{
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]); // * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+			}
+			else if (i >= 1 && i < 6)
+			{
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+			}
+			else if (i > 6 && i < 11)
+			{
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(-1.0f, 0.0f, 1.0f));
+			}
 			lightingShader.setUniform("model", model);
-
+			// model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 			// Set material properties
 			lightingShader.setUniform("material.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
 			lightingShader.setUniformSampler("material.diffuseMap", 0);
 			lightingShader.setUniform("material.specular", glm::vec3(0.8f, 0.8f, 0.8f));
 			lightingShader.setUniform("material.shininess", 32.0f);
-
 			texture[i].bind(0); // set the texture before drawing.  Our simple OBJ mesh loader does not do materials yet.
 			mesh[i].draw();		// Render the OBJ mesh
 			texture[i].unbind(0);

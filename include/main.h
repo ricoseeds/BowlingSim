@@ -24,7 +24,7 @@ bool gFlashlightOn = true;
 glm::vec4 gClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 static bool mac_moved = false;
 
-FPSCamera fpsCamera(glm::vec3(-4.159157, 7.344970, 39.236462), glm::vec3(-5.0, -8.0, 0.0));
+FPSCamera fpsCamera(glm::vec3(0.000000, 88.879349, 39.000000), glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
@@ -53,18 +53,18 @@ Texture2D texture[numModels];
 // Scene Model positions
 glm::vec3 modelPos[] = {
 
-    glm::vec3(0.0f, 0.0f, 0.0f),   // floor
-    glm::vec3(-4.0f, 0.0f, 0.0f),  // pin
-    glm::vec3(-5.0f, 0.0f, -1.0f), // pin
-    glm::vec3(-3.0f, 0.0f, -1.0f), // pin
-    glm::vec3(-6.0f, 0.0f, -2.0f), // pin
-    glm::vec3(-4.0f, 0.0f, -2.0f), // pin
-    glm::vec3(-2.0f, 0.0f, -2.0f), // pin
-    glm::vec3(-7.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-5.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-3.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-1.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-4.0f, 1.2f, 30.0f)  // ball
+    glm::vec3(0.0f, 0.0f, 0.0f),          // floor
+    glm::vec3(-4.0f + 4.0f, 0.0f, 0.0f),  // pin
+    glm::vec3(-5.0f + 4.0f, 0.0f, -1.0f), // pin
+    glm::vec3(-3.0f + 4.0f, 0.0f, -1.0f), // pin
+    glm::vec3(-6.0f + 4.0f, 0.0f, -2.0f), // pin
+    glm::vec3(-4.0f + 4.0f, 0.0f, -2.0f), // pin
+    glm::vec3(-2.0f + 4.0f, 0.0f, -2.0f), // pin
+    glm::vec3(-7.0f + 4.0f, 0.0f, -3.0f), // pin
+    glm::vec3(-5.0f + 4.0f, 0.0f, -3.0f), // pin
+    glm::vec3(-3.0f + 4.0f, 0.0f, -3.0f), // pin
+    glm::vec3(-1.0f + 4.0f, 0.0f, -3.0f), // pin
+    glm::vec3(-4.0f + 4.0f, 1.2f, 30.0f)  // ball
 
 };
 
@@ -99,7 +99,7 @@ void setupScene()
     mesh[8].loadOBJ("models/bowling_pin.obj");
     mesh[9].loadOBJ("models/bowling_pin.obj");
     mesh[10].loadOBJ("models/bowling_pin.obj");
-    mesh[11].loadOBJ("models/my_bowling_ball.obj");
+    mesh[11].loadOBJ("models/my_bowling_ball2.obj");
 
     texture[0].loadTexture("textures/woodbase.png", true);
     texture[1].loadTexture("textures/AMF.tga", true);
@@ -227,7 +227,7 @@ void update(double elapsedTime)
     glfwGetCursorPos(gWindow, &mouseX, &mouseY);
 
     // Rotate the camera the difference in mouse distance from the center screen.  Multiply this delta by a speed scaler
-    fpsCamera.rotate((float)(gWindowWidth / 2.0 - mouseX) * MOUSE_SENSITIVITY, (float)(gWindowHeight / 2.0 - mouseY) * MOUSE_SENSITIVITY);
+    // fpsCamera.rotate((float)(gWindowWidth / 2.0 - mouseX) * MOUSE_SENSITIVITY, (float)(gWindowHeight / 2.0 - mouseY) * MOUSE_SENSITIVITY);
 
     // Clamp mouse cursor to center of screen
     glfwSetCursorPos(gWindow, gWindowWidth / 2.0, gWindowHeight / 2.0);
@@ -352,7 +352,7 @@ void setUpSpotLight(ShaderProgram lightingShader)
 {
 
     glm::vec3 spotlightPos = glm::vec3(-5.831445, 7.433479, -0.696963);
-    glm::vec3 spotlightLook = glm::vec3(0.288417, -0.925675, -0.244831);
+    glm::vec3 spotlightLook = glm::vec3(0.0, -0.0, -0.0);
     lightingShader.setUniform("spotLight.ambient", glm::vec3(0.9f, 0.9f, 0.9f));
     lightingShader.setUniform("spotLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
     lightingShader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
