@@ -24,7 +24,7 @@ bool gFlashlightOn = true;
 glm::vec4 gClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 static bool mac_moved = false;
 
-FPSCamera fpsCamera(glm::vec3(0.000000, 88.879349, 39.000000), glm::vec3(-0.0, -0.0, 0.0));
+FPSCamera fpsCamera(glm::vec3(0.000000, 60.879349, 80.000000), glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
@@ -64,7 +64,7 @@ glm::vec3 modelPos[] = {
     glm::vec3(-5.0f + 4.0f, 0.0f, -3.0f), // pin
     glm::vec3(-3.0f + 4.0f, 0.0f, -3.0f), // pin
     glm::vec3(-1.0f + 4.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-4.0f + 4.0f, 1.2f, 30.0f)  // ball
+    glm::vec3(-4.0f + 4.0f, 1.25f, 30.0f) // ball
 
 };
 
@@ -351,7 +351,7 @@ void setUpDirectionalAndPointLights(ShaderProgram lightingShader)
 void setUpSpotLight(ShaderProgram lightingShader)
 {
 
-    glm::vec3 spotlightPos = glm::vec3(-5.831445, 7.433479, -0.696963);
+    glm::vec3 spotlightPos = glm::vec3(-5.831445 + 4.0f, 7.433479, -0.696963);
     glm::vec3 spotlightLook = glm::vec3(0.0, -0.0, -0.0);
     lightingShader.setUniform("spotLight.ambient", glm::vec3(0.9f, 0.9f, 0.9f));
     lightingShader.setUniform("spotLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));

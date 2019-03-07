@@ -81,7 +81,8 @@ int main()
 		{
 			if (i == 11)
 			{
-				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]); // * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+				modelPos[i] = modelPos[i] + glm::vec3(0.0f, 0.0f, -0.10f);
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
 			}
 			else if (i >= 1 && i < 6)
 			{
