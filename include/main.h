@@ -23,6 +23,9 @@ bool gWireframe = false;
 bool gFlashlightOn = true;
 glm::vec4 gClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 static bool mac_moved = false;
+double ball_dir_left_or_right = 0.0;
+double ball_speed = 0.0;
+bool hit_ball = false;
 
 FPSCamera fpsCamera(glm::vec3(0.000000, 60.879349, 80.000000), glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
@@ -251,6 +254,11 @@ void update(double elapsedTime)
         fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
     else if (glfwGetKey(gWindow, GLFW_KEY_X) == GLFW_PRESS)
         fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
+
+    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
+    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
 //-----------------------------------------------------------------------------
@@ -351,17 +359,17 @@ void setUpDirectionalAndPointLights(ShaderProgram lightingShader)
 void setUpSpotLight(ShaderProgram lightingShader)
 {
 
-    glm::vec3 spotlightPos = glm::vec3(-5.831445 + 4.0f, 7.433479, -0.696963);
-    glm::vec3 spotlightLook = glm::vec3(0.0, -0.0, -0.0);
+    glm::vec3 spotlightPos = glm::vec3(0.0, 10.433479, -0.696963);
+    glm::vec3 spotlightLook = glm::vec3(0.01, -0.925675, -0.244831);
     lightingShader.setUniform("spotLight.ambient", glm::vec3(0.9f, 0.9f, 0.9f));
-    lightingShader.setUniform("spotLight.diffuse", glm::vec3(0.8f, 0.8f, 0.8f));
-    lightingShader.setUniform("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
+    lightingShader.setUniform("spotLight.diffuse", glm::vec3(5.0f, 5.0f, 5.0f));
+    lightingShader.setUniform("spotLight.specular", glm::vec3(10.0f, 10.0f, 10.0f));
     lightingShader.setUniform("spotLight.position", spotlightPos);
     lightingShader.setUniform("spotLight.direction", spotlightLook);
     // lightingShader.setUniform("spotLight.direction", fpsCamera.getLook());
     lightingShader.setUniform("spotLight.cosInnerCone", glm::cos(glm::radians(15.0f)));
     lightingShader.setUniform("spotLight.cosOuterCone", glm::cos(glm::radians(20.0f)));
-    lightingShader.setUniform("spotLight.constant", 1.0f);
+    lightingShader.setUniform("spotLight.constant", 4.0f);
     lightingShader.setUniform("spotLight.linear", 0.07f);
     lightingShader.setUniform("spotLight.exponent", 0.017f);
     lightingShader.setUniform("spotLight.on", gFlashlightOn);

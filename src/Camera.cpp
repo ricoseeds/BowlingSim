@@ -25,9 +25,9 @@ Camera::Camera()
 //------------------------------------------------------------
 glm::mat4 Camera::getViewMatrix() const
 {
-	std::cout << "Inside getViewMatrix" << std::endl;
-	std::cout << glm::to_string(mPosition) << std::endl;
-	std::cout << glm::to_string(mTargetPos) << std::endl;
+	// std::cout << "Inside getViewMatrix" << std::endl;
+	// std::cout << glm::to_string(mPosition) << std::endl;
+	// std::cout << glm::to_string(mTargetPos) << std::endl;
 	return glm::lookAt(mPosition, mTargetPos, mUp);
 }
 

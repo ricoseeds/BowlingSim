@@ -70,31 +70,36 @@ int main()
 		renderFloor(model, lightingShader);
 
 		//debugging essential
-		std::cout << "POS" << std::endl;
-		std::cout << glm::to_string(fpsCamera.getPosition()) << std::endl;
-		std::cout << "LOOK" << std::endl;
-		std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
+		// std::cout << "POS" << std::endl;
+		// std::cout << glm::to_string(fpsCamera.getPosition()) << std::endl;
+		// std::cout << "LOOK" << std::endl;
+		// std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
 
 		// draw rest of the meshes shader is same for all
 
 		for (int i = 1; i < numModels; i++)
 		{
-			if (i == 11)
+			if (i == 11 && hit_ball)
 			{
 				modelPos[i] = modelPos[i] + glm::vec3(0.0f, 0.0f, -0.10f);
-				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+				model = glm::translate(glm::mat4(1.0), modelPos[i] + glm::vec3(3 * -sinf(glfwGetTime() * 2.0f), 0.0f, 0.0f)) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
 			}
-			else if (i >= 1 && i < 6)
+			else
 			{
-				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 			}
-			else if (i > 6 && i < 11)
-			{
-				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(-1.0f, 0.0f, 1.0f));
-			}
-			lightingShader.setUniform("model", model);
+
+			// else if (i >= 1 && i < 6)
+			// {
+			// 	model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+			// }
+			// else if (i > 6 && i < 11)
+			// {
+			// 	model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(-1.0f, 0.0f, 1.0f));
+			// }
 			// model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 			// Set material properties
+			lightingShader.setUniform("model", model);
 			lightingShader.setUniform("material.ambient", glm::vec3(0.1f, 0.1f, 0.1f));
 			lightingShader.setUniformSampler("material.diffuseMap", 0);
 			lightingShader.setUniform("material.specular", glm::vec3(0.8f, 0.8f, 0.8f));
