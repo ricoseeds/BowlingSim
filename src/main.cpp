@@ -6,8 +6,8 @@
 int main()
 {
 	// fpsCamera.setLookAt(glm::normalize(glm::vec3(-30.012413, -430.210178, -230.977584)));
-	std::cout << "INITCAM" << std::endl;
-	std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
+	// std::cout << "INITCAM" << std::endl;
+	// std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
 
 	if (!initOpenGL())
 	{
@@ -82,7 +82,12 @@ int main()
 			if (i == 11 && hit_ball)
 			{
 				modelPos[i] = modelPos[i] + glm::vec3(0.0f, 0.0f, -0.10f);
-				model = glm::translate(glm::mat4(1.0), modelPos[i] + glm::vec3(3 * -sinf(glfwGetTime() * 2.0f), 0.0f, 0.0f)) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+				// model = glm::translate(glm::mat4(1.0), modelPos[i] + glm::vec3(3 * -sinf(glfwGetTime() * 2.0f), 0.0f, 0.0f)) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
+			}
+			else if (i == 11 && !hit_ball)
+			{
+				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(modelPos[i].x * 30.0f)), glm::vec3(0.0f, 0.0f, 1.0f));
 			}
 			else
 			{

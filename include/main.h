@@ -1,6 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <algorithm>
 #define GLEW_STATIC
 #include "GL/glew.h" // Important - this header must come before glfw3 header
 #include "GLFW/glfw3.h"
@@ -26,6 +27,7 @@ static bool mac_moved = false;
 double ball_dir_left_or_right = 0.0;
 double ball_speed = 0.0;
 bool hit_ball = false;
+bool respawn_scene = false;
 
 FPSCamera fpsCamera(glm::vec3(0.000000, 60.879349, 80.000000), glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
@@ -45,6 +47,8 @@ void setUpSpotLight(ShaderProgram);
 void drawFloor(Mesh mesh, ShaderProgram lightingShader, Texture2D texture, glm::vec3 position, glm::vec3 scale, glm::mat4 model);
 void setupScene();
 void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
+float clip(float n, float lower, float upper);
+
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
 //-----------------------------------------------------------------------------
@@ -56,18 +60,18 @@ Texture2D texture[numModels];
 // Scene Model positions
 glm::vec3 modelPos[] = {
 
-    glm::vec3(0.0f, 0.0f, 0.0f),          // floor
-    glm::vec3(-4.0f + 4.0f, 0.0f, 0.0f),  // pin
-    glm::vec3(-5.0f + 4.0f, 0.0f, -1.0f), // pin
-    glm::vec3(-3.0f + 4.0f, 0.0f, -1.0f), // pin
-    glm::vec3(-6.0f + 4.0f, 0.0f, -2.0f), // pin
-    glm::vec3(-4.0f + 4.0f, 0.0f, -2.0f), // pin
-    glm::vec3(-2.0f + 4.0f, 0.0f, -2.0f), // pin
-    glm::vec3(-7.0f + 4.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-5.0f + 4.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-3.0f + 4.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-1.0f + 4.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-4.0f + 4.0f, 1.25f, 30.0f) // ball
+    glm::vec3(0.0f, 0.0f, 0.0f),   // floor
+    glm::vec3(0.0f, 0.0f, 0.0f),   // pin
+    glm::vec3(-1.0f, 0.0f, -1.0f), // pin
+    glm::vec3(1.0f, 0.0f, -1.0f),  // pin
+    glm::vec3(-2.0f, 0.0f, -2.0f), // pin
+    glm::vec3(0.0f, 0.0f, -2.0f),  // pin
+    glm::vec3(2.0f, 0.0f, -2.0f),  // pin
+    glm::vec3(-3.0f, 0.0f, -3.0f), // pin
+    glm::vec3(-1.0f, 0.0f, -3.0f), // pin
+    glm::vec3(1.0f, 0.0f, -3.0f),  // pin
+    glm::vec3(3.0f, 0.0f, -3.0f),  // pin
+    glm::vec3(-0.0f, 1.25f, 30.0f) // ball // origin of the ball
 
 };
 
@@ -194,6 +198,18 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         // toggle the flashlight
         gFlashlightOn = !gFlashlightOn;
     }
+    if (key == GLFW_KEY_R && action == GLFW_PRESS)
+    {
+        respawn_scene = true;
+        modelPos[11] = glm::vec3(-4.0f + 4.0f, 1.25f, 30.0f);
+        hit_ball = false;
+    }
+}
+
+//For clamping
+float clip(float n, float lower, float upper)
+{
+    return std::max(lower, std::min(n, upper));
 }
 
 //-----------------------------------------------------------------------------
@@ -255,10 +271,45 @@ void update(double elapsedTime)
     else if (glfwGetKey(gWindow, GLFW_KEY_X) == GLFW_PRESS)
         fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 
-    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS)
-        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * glm::vec3(0.0f, 1.0f, 0.0f));
-    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS)
-        fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
+    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS && !hit_ball)
+    {
+        if (respawn_scene)
+        {
+            modelPos[11].x = 0.0f;
+            hit_ball = false;
+            respawn_scene = false;
+            ball_dir_left_or_right = 0.0;
+        }
+        else
+        {
+            ball_dir_left_or_right = clip(ball_dir_left_or_right - 0.05, -4.0f, 4.0f);
+            // std::cout << ball_dir_left_or_right << std::endl;
+            modelPos[11].x = ball_dir_left_or_right;
+        }
+    }
+    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS && !hit_ball)
+    {
+        if (respawn_scene)
+        {
+            modelPos[11].x = 0.0f;
+            respawn_scene = false;
+            hit_ball = false;
+            ball_dir_left_or_right = 0.0;
+        }
+        else
+        {
+            ball_dir_left_or_right = clip(ball_dir_left_or_right + 0.05, -4.0f, 4.0f);
+            // std::cout << ball_dir_left_or_right << std::endl;
+            modelPos[11].x = ball_dir_left_or_right;
+        }
+    }
+    else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
+    {
+        hit_ball = true;
+    }
+    else if (glfwGetKey(gWindow, GLFW_KEY_DOWN) == GLFW_PRESS)
+    {
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -298,7 +349,7 @@ void showFPS(GLFWwindow *window)
 }
 void mac_patch(GLFWwindow *window)
 {
-    if (glfwGetTime() > 2.0)
+    if (glfwGetTime() > 3.0)
     {
         mac_moved = true;
     }
