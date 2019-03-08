@@ -28,7 +28,7 @@ double ball_dir_left_or_right = 0.0;
 double ball_speed = 0.0;
 bool hit_ball = false;
 bool respawn_scene = false;
-
+double speed_factor = -0.2f;
 FPSCamera fpsCamera(glm::vec3(0.000000, 60.879349, 80.000000), glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
@@ -60,7 +60,7 @@ Texture2D texture[numModels];
 // Scene Model positions
 glm::vec3 modelPos[] = {
 
-    glm::vec3(0.0f, 0.0f, 0.0f),   // floor
+    glm::vec3(5.0f, 0.0f, 0.0f),   // floor
     glm::vec3(0.0f, 0.0f, 0.0f),   // pin
     glm::vec3(-1.0f, 0.0f, -1.0f), // pin
     glm::vec3(1.0f, 0.0f, -1.0f),  // pin
@@ -295,6 +295,7 @@ void update(double elapsedTime)
             respawn_scene = false;
             hit_ball = false;
             ball_dir_left_or_right = 0.0;
+            speed_factor = -0.2f;
         }
         else
         {
@@ -309,6 +310,8 @@ void update(double elapsedTime)
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
+        speed_factor = clip(speed_factor - 0.007f, -0.4f, -0.2f);
+        // std::cout << speed_factor << std::endl;
     }
 }
 
