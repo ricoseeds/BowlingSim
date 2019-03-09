@@ -18,7 +18,7 @@
 #include "../include/Mesh.h"
 
 // Global Variables
-const char *APP_TITLE = "Introduction to Modern OpenGL - Multiple Lights";
+const char *APP_TITLE = "Bowling simulation";
 int gWindowWidth = 1024;
 int gWindowHeight = 768;
 GLFWwindow *gWindow = NULL;
@@ -31,7 +31,7 @@ double ball_speed = 0.0;
 bool release_ball = false;
 bool respawn_scene = false;
 double speed_factor = -0.2f;
-glm::vec3 campos(0.000000, 60.879349, 80.000000);
+glm::vec3 campos(0.000000, 40.879349, 140.000000);
 FPSCamera fpsCamera(campos, glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
@@ -44,7 +44,7 @@ float Blend[16] = {
 glm::mat4 blend_mat = glm::make_mat4(Blend);
 std::vector<glm::vec3> dynamic_points;
 double bezier_param = 0.0;
-glm::vec3 initial_ball_position(-0.0f, 1.25f, 30.0f);
+glm::vec3 initial_ball_position(-0.0f, 1.25f, 80.0f);
 
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -91,7 +91,7 @@ glm::vec3 modelPos[] = {
 // Model scale
 glm::vec3 modelScale[] = {
 
-    glm::vec3(10.0f, 1.0f, 10.0f), // floor
+    glm::vec3(18.0f, 1.0f, 18.0f), // floor
     glm::vec3(0.2f, 0.2f, 0.2f),   // pin
     glm::vec3(0.2f, 0.2f, 0.2f),   // pin
     glm::vec3(0.2f, 0.2f, 0.2f),   // pin
@@ -214,8 +214,11 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
     if (key == GLFW_KEY_R && action == GLFW_PRESS)
     {
         respawn_scene = true;
-        modelPos[11] = glm::vec3(-4.0f + 4.0f, 1.25f, 30.0f);
+        modelPos[11] = initial_ball_position;
         release_ball = false;
+        bezier_param = 0.0;
+        dynamic_points.clear();
+        ball_dir_left_or_right = 0.0;
     }
 }
 
@@ -291,11 +294,11 @@ void update(double elapsedTime)
             // modelPos[11].x = 0.0f;
             release_ball = false;
             respawn_scene = false;
-            ball_dir_left_or_right = 0.0;
+            // ball_dir_left_or_right = 0.0;
             speed_factor = -0.2f;
-            dynamic_points.clear();
-            bezier_param = 0.0;
-            modelPos[11] = glm::vec3(-0.0f, 1.25f, 30.0f); // original position
+            // dynamic_points.clear();
+            // bezier_param = 0.0;
+            // modelPos[11] = initial_ball_position; // original position
         }
         else
         {
@@ -311,11 +314,11 @@ void update(double elapsedTime)
             // modelPos[11].x = 0.0f;
             respawn_scene = false;
             release_ball = false;
-            ball_dir_left_or_right = 0.0;
+            // ball_dir_left_or_right = 0.0;
             speed_factor = -0.2f;
-            dynamic_points.clear();
-            bezier_param = 0.0;
-            modelPos[11] = glm::vec3(-0.0f, 1.25f, 30.0f); // original position
+            // dynamic_points.clear();
+            // bezier_param = 0.0;
+            // modelPos[11] = initial_ball_position; // original position
         }
         else
         {
@@ -327,6 +330,11 @@ void update(double elapsedTime)
     else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
     {
         release_ball = true;
+        if (respawn_scene)
+        {
+            respawn_scene = false;
+        }
+
         if (ball_dir_left_or_right < 0.0)
         {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
@@ -334,11 +342,18 @@ void update(double elapsedTime)
             dynamic_points.push_back(glm::vec3(-1.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
-        else
+        else if (ball_dir_left_or_right > 0.0)
         {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
             dynamic_points.push_back(glm::vec3(4.0f, modelPos[11].y, 10.0f));
             dynamic_points.push_back(glm::vec3(1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
+        }
+        else
+        {
+            dynamic_points.push_back(initial_ball_position);
+            dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
     }
