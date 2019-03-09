@@ -8,6 +8,11 @@ $ g++ src/main.cpp src/ShaderProgram.cpp src/Texture2D.cpp src/Camera.cpp src/Me
 
 $ ./a.out
 ```
+
+###### Run in Linux
+```
+g++ -std=c++11 src/main.cpp src/ShaderProgram.cpp src/Texture2D.cpp src/Camera.cpp src/Mesh.cpp -lglfw -lGL -lm -lXrandr -lXi -lX11 -lXxf86vm -lpthread -lGLEW
+```
 ###### Sample output
 
 ![screenshot 2019-02-27 at 4 16 47 am](https://user-images.githubusercontent.com/17334660/53452200-a7de5b80-3a46-11e9-9fb2-282d4d70788f.png)

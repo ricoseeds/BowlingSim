@@ -5,6 +5,7 @@
 #define GLEW_STATIC
 #include "GL/glew.h" // Important - this header must come before glfw3 header
 #include "GLFW/glfw3.h"
+#define GLM_FORCE_RADIANS
 #define GLM_ENABLE_EXPERIMENTAL
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
