@@ -26,7 +26,7 @@ bool gWireframe = false;
 bool gFlashlightOn = true;
 glm::vec4 gClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 static bool mac_moved = false;
-double ball_dir_left_or_right = 0.0;
+double ball_dir_left_or_right = 0.0000001;
 double ball_speed = 0.0;
 bool hit_ball = false;
 bool respawn_scene = false;
@@ -36,16 +36,16 @@ FPSCamera fpsCamera(campos, glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
-float Blend[16] = { 
+float Blend[16] = {
     1.0f, 0.0f, 0.0f, 0.0f,
     -3.0f, 3.0f, 0.0f, 0.0f,
     3.0f, -6.0f, 3.0f, 0.0f,
-   -1.0f, 3.0f, -3.0f, 1.0f
-};
+    -1.0f, 3.0f, -3.0f, 1.0f};
 glm::mat4 blend_mat = glm::make_mat4(Blend);
-std::vector<glm::vec3> dynamic_points; 
+std::vector<glm::vec3> dynamic_points;
 double bezier_param = 0.0;
-
+glm::vec3 ball_init_pos(0.0f, 1.25f, 60.0f);
+bool follow_bezier_path = false;
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
 void glfw_onFramebufferSize(GLFWwindow *window, int width, int height);
@@ -60,7 +60,7 @@ void drawFloor(Mesh mesh, ShaderProgram lightingShader, Texture2D texture, glm::
 void setupScene();
 void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
 float clip(float n, float lower, float upper);
-glm::vec3 get_bezier_points(double t);
+glm::vec3 get_bezier_points(double, float *);
 
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
@@ -84,14 +84,14 @@ glm::vec3 modelPos[] = {
     glm::vec3(-1.0f, 0.0f, -3.0f), // pin
     glm::vec3(1.0f, 0.0f, -3.0f),  // pin
     glm::vec3(3.0f, 0.0f, -3.0f),  // pin
-    glm::vec3(-0.0f, 1.25f, 30.0f) // ball // origin of the ball
+    ball_init_pos                  // ball // origin of the ball
 
 };
 
 // Model scale
 glm::vec3 modelScale[] = {
 
-    glm::vec3(10.0f, 1.0f, 10.0f), // floor
+    glm::vec3(15.0f, 1.0f, 15.0f), // floor
     glm::vec3(0.2f, 0.2f, 0.2f),   // pin
     glm::vec3(0.2f, 0.2f, 0.2f),   // pin
     glm::vec3(0.2f, 0.2f, 0.2f),   // pin
@@ -214,7 +214,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
     if (key == GLFW_KEY_R && action == GLFW_PRESS)
     {
         respawn_scene = true;
-        modelPos[11] = glm::vec3(-4.0f + 4.0f, 1.25f, 30.0f);
+        modelPos[11] = ball_init_pos;
         hit_ball = false;
     }
 }
@@ -295,13 +295,14 @@ void update(double elapsedTime)
             speed_factor = -0.2f;
             dynamic_points.clear();
             bezier_param = 0.0;
-            modelPos[11] = glm::vec3(-0.0f, 1.25f, 30.0f); // original position
+            modelPos[11] = ball_init_pos; // original position
         }
         else
         {
+            follow_bezier_path = true;
             ball_dir_left_or_right = clip(ball_dir_left_or_right - 0.05, -4.0f, 4.0f);
             // std::cout << ball_dir_left_or_right << std::endl;
-            modelPos[11].x = ball_dir_left_or_right;
+            modelPos[11].x = ball_dir_left_or_right + 0.00000001;
         }
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS && !hit_ball)
@@ -315,32 +316,34 @@ void update(double elapsedTime)
             speed_factor = -0.2f;
             dynamic_points.clear();
             bezier_param = 0.0;
-            modelPos[11] = glm::vec3(-0.0f, 1.25f, 30.0f); // original position
+            modelPos[11] = ball_init_pos; // original position
         }
         else
         {
+            follow_bezier_path = true;
             ball_dir_left_or_right = clip(ball_dir_left_or_right + 0.05, -4.0f, 4.0f);
+            modelPos[11].x = ball_dir_left_or_right + 0.00000001;
+
             // std::cout << ball_dir_left_or_right << std::endl;
-            modelPos[11].x = ball_dir_left_or_right;
         }
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
     {
         hit_ball = true;
-        if (ball_dir_left_or_right < 0.0) {
+        if (ball_dir_left_or_right < 0.0)
+        {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
-            dynamic_points.push_back(glm::vec3( -4.0f, modelPos[11].y, 10.0f));
-            dynamic_points.push_back(glm::vec3( -1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(-4.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3(-1.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
         else
         {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
-            dynamic_points.push_back(glm::vec3( 4.0f, modelPos[11].y, 10.0f));
-            dynamic_points.push_back(glm::vec3( 1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(4.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3(1.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
-
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
@@ -462,8 +465,9 @@ void setUpSpotLight(ShaderProgram lightingShader)
     lightingShader.setUniform("spotLight.exponent", 0.017f);
     lightingShader.setUniform("spotLight.on", gFlashlightOn);
 }
-glm::vec3 get_bezier_points(double t){
-    float *point_array = &dynamic_points[0].x;
-    glm::mat4x3 control_p = glm::make_mat4x3(point_array); 
-    return control_p * blend_mat * glm::vec4(1.0f, t, t*t, t*t*t) ;
+glm::vec3 get_bezier_points(double t, float *point_array)
+{
+    // float *point_array = &dynamic_points[0].x;
+    glm::mat4x3 control_p = glm::make_mat4x3(point_array);
+    return control_p * blend_mat * glm::vec4(1.0f, t, t * t, t * t * t);
 }

@@ -39,11 +39,17 @@ int main()
 		// Poll for and process events
 		glfwPollEvents();
 		update(deltaTime);
-		// fpsCamera.move(campos - glm::vec3(0.0f , 0.0f, -0.00000001f));
 
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		fpsCamera.move(glm::vec3(0.0f, -0.1f, -0.1f)) ;
+		if (hit_ball)
+		{
+			fpsCamera.move(glm::vec3(0.0f, -0.8f, -0.8f));
+		}
+		else if (respawn_scene && fpsCamera.getPosition().z <= campos.z) // retract camera
+		{
+			fpsCamera.move(glm::vec3(0.0f, 0.8f, 0.8f));
+		}
 
 		glm::mat4 model(1.0), view(1.0), projection(1.0);
 
@@ -83,10 +89,12 @@ int main()
 		{
 			if (i == 11 && hit_ball)
 			{
-				if(modelPos[i].x != 0.0 ){
-					modelPos[i] = get_bezier_points(bezier_param);
+				if (follow_bezier_path)
+				{
+					modelPos[i] = get_bezier_points(bezier_param, &dynamic_points[0].x);
 					model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
-					if (bezier_param >= 0.9) {
+					if (bezier_param >= 0.9)
+					{
 						hit_ball = false;
 					}
 					else
@@ -98,11 +106,12 @@ int main()
 				{
 					modelPos[i] = modelPos[i] + glm::vec3(0.0f, 0.0f, speed_factor);
 					model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
-					if(modelPos[i].z <= 0.0){
+					if (modelPos[i].z <= 0.0)
+					{
 						hit_ball = false;
 					}
 				}
-				
+
 				// modelPos[i] = modelPos[i] + glm::vec3(0.0f, 0.0f, speed_factor);
 				// commented sin model = glm::translate(glm::mat4(1.0), modelPos[i] + glm::vec3(3 * -sinf(glfwGetTime() * 2.0f), 0.0f, 0.0f)) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
 				// model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
