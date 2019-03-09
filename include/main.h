@@ -28,7 +28,7 @@ glm::vec4 gClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 static bool mac_moved = false;
 double ball_dir_left_or_right = 0.0;
 double ball_speed = 0.0;
-bool hit_ball = false;
+bool release_ball = false;
 bool respawn_scene = false;
 double speed_factor = -0.2f;
 glm::vec3 campos(0.000000, 60.879349, 80.000000);
@@ -36,15 +36,15 @@ FPSCamera fpsCamera(campos, glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
-float Blend[16] = { 
+float Blend[16] = {
     1.0f, 0.0f, 0.0f, 0.0f,
     -3.0f, 3.0f, 0.0f, 0.0f,
     3.0f, -6.0f, 3.0f, 0.0f,
-   -1.0f, 3.0f, -3.0f, 1.0f
-};
+    -1.0f, 3.0f, -3.0f, 1.0f};
 glm::mat4 blend_mat = glm::make_mat4(Blend);
-std::vector<glm::vec3> dynamic_points; 
+std::vector<glm::vec3> dynamic_points;
 double bezier_param = 0.0;
+glm::vec3 initial_ball_position(-0.0f, 1.25f, 30.0f);
 
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -84,7 +84,7 @@ glm::vec3 modelPos[] = {
     glm::vec3(-1.0f, 0.0f, -3.0f), // pin
     glm::vec3(1.0f, 0.0f, -3.0f),  // pin
     glm::vec3(3.0f, 0.0f, -3.0f),  // pin
-    glm::vec3(-0.0f, 1.25f, 30.0f) // ball // origin of the ball
+    initial_ball_position          // ball // origin of the ball
 
 };
 
@@ -215,7 +215,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
     {
         respawn_scene = true;
         modelPos[11] = glm::vec3(-4.0f + 4.0f, 1.25f, 30.0f);
-        hit_ball = false;
+        release_ball = false;
     }
 }
 
@@ -284,12 +284,12 @@ void update(double elapsedTime)
     else if (glfwGetKey(gWindow, GLFW_KEY_X) == GLFW_PRESS)
         fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 
-    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS && !hit_ball)
+    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS && !release_ball)
     {
         if (respawn_scene)
         {
             // modelPos[11].x = 0.0f;
-            hit_ball = false;
+            release_ball = false;
             respawn_scene = false;
             ball_dir_left_or_right = 0.0;
             speed_factor = -0.2f;
@@ -304,13 +304,13 @@ void update(double elapsedTime)
             modelPos[11].x = ball_dir_left_or_right;
         }
     }
-    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS && !hit_ball)
+    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS && !release_ball)
     {
         if (respawn_scene)
         {
             // modelPos[11].x = 0.0f;
             respawn_scene = false;
-            hit_ball = false;
+            release_ball = false;
             ball_dir_left_or_right = 0.0;
             speed_factor = -0.2f;
             dynamic_points.clear();
@@ -326,21 +326,21 @@ void update(double elapsedTime)
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
     {
-        hit_ball = true;
-        if (ball_dir_left_or_right < 0.0) {
+        release_ball = true;
+        if (ball_dir_left_or_right < 0.0)
+        {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
-            dynamic_points.push_back(glm::vec3( -4.0f, modelPos[11].y, 10.0f));
-            dynamic_points.push_back(glm::vec3( -1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(-4.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3(-1.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
         else
         {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
-            dynamic_points.push_back(glm::vec3( 4.0f, modelPos[11].y, 10.0f));
-            dynamic_points.push_back(glm::vec3( 1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(4.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3(1.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
-
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
@@ -462,8 +462,9 @@ void setUpSpotLight(ShaderProgram lightingShader)
     lightingShader.setUniform("spotLight.exponent", 0.017f);
     lightingShader.setUniform("spotLight.on", gFlashlightOn);
 }
-glm::vec3 get_bezier_points(double t){
+glm::vec3 get_bezier_points(double t)
+{
     float *point_array = &dynamic_points[0].x;
-    glm::mat4x3 control_p = glm::make_mat4x3(point_array); 
-    return control_p * blend_mat * glm::vec4(1.0f, t, t*t, t*t*t) ;
+    glm::mat4x3 control_p = glm::make_mat4x3(point_array);
+    return control_p * blend_mat * glm::vec4(1.0f, t, t * t, t * t * t);
 }
