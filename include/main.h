@@ -10,6 +10,7 @@
 #include "glm/glm.hpp"
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtx/string_cast.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include "../include/ShaderProgram.h"
 #include "../include/Texture2D.h"
@@ -34,6 +35,15 @@ FPSCamera fpsCamera(glm::vec3(0.000000, 60.879349, 80.000000), glm::vec3(-0.0, -
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
+float Blend[16] = { 
+    1.0f, 0.0f, 0.0f, 0.0f,
+    -3.0f, 3.0f, 0.0f, 0.0f,
+    3.0f, -6.0f, 3.0f, 0.0f,
+   -1.0f, 3.0f, -3.0f, 1.0f
+};
+glm::mat4 blend_mat = glm::make_mat4(Blend);
+std::vector<glm::vec3> dynamic_points; 
+double bezier_param = 0.0;
 
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -49,6 +59,7 @@ void drawFloor(Mesh mesh, ShaderProgram lightingShader, Texture2D texture, glm::
 void setupScene();
 void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
 float clip(float n, float lower, float upper);
+glm::vec3 get_bezier_points(double t);
 
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
@@ -276,10 +287,14 @@ void update(double elapsedTime)
     {
         if (respawn_scene)
         {
-            modelPos[11].x = 0.0f;
+            // modelPos[11].x = 0.0f;
             hit_ball = false;
             respawn_scene = false;
             ball_dir_left_or_right = 0.0;
+            speed_factor = -0.2f;
+            dynamic_points.clear();
+            bezier_param = 0.0;
+            modelPos[11] = glm::vec3(-0.0f, 1.25f, 30.0f); // original position
         }
         else
         {
@@ -292,11 +307,14 @@ void update(double elapsedTime)
     {
         if (respawn_scene)
         {
-            modelPos[11].x = 0.0f;
+            // modelPos[11].x = 0.0f;
             respawn_scene = false;
             hit_ball = false;
             ball_dir_left_or_right = 0.0;
             speed_factor = -0.2f;
+            dynamic_points.clear();
+            bezier_param = 0.0;
+            modelPos[11] = glm::vec3(-0.0f, 1.25f, 30.0f); // original position
         }
         else
         {
@@ -308,6 +326,35 @@ void update(double elapsedTime)
     else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
     {
         hit_ball = true;
+        // uint sign;
+        // if (ball_dir_left_or_right < 0.0) {
+        //     sign = -1; 
+        // }else{
+        //     sign = 1;
+        // }
+        
+        //cubic bezier curve control point setup
+        // dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z);
+        if (ball_dir_left_or_right < 0.0) {
+            dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
+            dynamic_points.push_back(glm::vec3( -4.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3( -1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
+        }
+        else
+        {
+            dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
+            dynamic_points.push_back(glm::vec3( 4.0f, modelPos[11].y, 10.0f));
+            dynamic_points.push_back(glm::vec3( 1.0f, modelPos[11].y, 4.0f));
+            dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
+        }
+        
+        
+        // dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
+        // dynamic_points.push_back(glm::vec3( -4.0f, modelPos[11].y, 10.0f));
+        // dynamic_points.push_back(glm::vec3( -1.0f, modelPos[11].y, 4.0f));
+        // dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
+
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_DOWN) == GLFW_PRESS)
     {
@@ -428,4 +475,9 @@ void setUpSpotLight(ShaderProgram lightingShader)
     lightingShader.setUniform("spotLight.linear", 0.07f);
     lightingShader.setUniform("spotLight.exponent", 0.017f);
     lightingShader.setUniform("spotLight.on", gFlashlightOn);
+}
+glm::vec3 get_bezier_points(double t){
+    float *point_array = &dynamic_points[0].x;
+    glm::mat4x3 control_p = glm::make_mat4x3(point_array); 
+    return control_p * blend_mat * glm::vec4(1.0f, t, t*t, t*t*t) ;
 }
