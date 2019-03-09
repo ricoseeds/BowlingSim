@@ -348,12 +348,6 @@ void update(double elapsedTime)
             dynamic_points.push_back(glm::vec3( 1.0f, modelPos[11].y, 4.0f));
             dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
         }
-        
-        
-        // dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
-        // dynamic_points.push_back(glm::vec3( -4.0f, modelPos[11].y, 10.0f));
-        // dynamic_points.push_back(glm::vec3( -1.0f, modelPos[11].y, 4.0f));
-        // dynamic_points.push_back(glm::vec3(0.0f, modelPos[11].y, 0.0f));
 
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_DOWN) == GLFW_PRESS)
