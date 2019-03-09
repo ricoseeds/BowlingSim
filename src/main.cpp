@@ -39,9 +39,11 @@ int main()
 		// Poll for and process events
 		glfwPollEvents();
 		update(deltaTime);
+		// fpsCamera.move(campos - glm::vec3(0.0f , 0.0f, -0.00000001f));
 
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fpsCamera.move(glm::vec3(0.0f, -0.1f, -0.1f)) ;
 
 		glm::mat4 model(1.0), view(1.0), projection(1.0);
 

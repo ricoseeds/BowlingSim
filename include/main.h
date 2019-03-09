@@ -31,7 +31,8 @@ double ball_speed = 0.0;
 bool hit_ball = false;
 bool respawn_scene = false;
 double speed_factor = -0.2f;
-FPSCamera fpsCamera(glm::vec3(0.000000, 60.879349, 80.000000), glm::vec3(-0.0, -0.0, 0.0));
+glm::vec3 campos(0.000000, 60.879349, 80.000000);
+FPSCamera fpsCamera(campos, glm::vec3(-0.0, -0.0, 0.0));
 const double ZOOM_SENSITIVITY = -3.0;
 const float MOVE_SPEED = 50.0; // units per second
 const float MOUSE_SENSITIVITY = 0.1f;
@@ -326,15 +327,6 @@ void update(double elapsedTime)
     else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
     {
         hit_ball = true;
-        // uint sign;
-        // if (ball_dir_left_or_right < 0.0) {
-        //     sign = -1; 
-        // }else{
-        //     sign = 1;
-        // }
-        
-        //cubic bezier curve control point setup
-        // dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z);
         if (ball_dir_left_or_right < 0.0) {
             dynamic_points.push_back(glm::vec3(modelPos[11].x, modelPos[11].y, modelPos[11].z));
             dynamic_points.push_back(glm::vec3( -4.0f, modelPos[11].y, 10.0f));
