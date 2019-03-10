@@ -43,9 +43,25 @@ int main()
 
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (release_ball)
+		if (!cam_dest_reached && cam_start)
 		{
-			fpsCamera.move(glm::vec3(0.0f, -0.4f, -0.8f));
+			// fpsCamera.move(glm::vec3(0.0f, -0.4f, -0.8f));
+			// fpsCamera.move(glm::vec3(0.0f, -0.4f, -0.8f));
+			// modelPos[i] = get_bezier_points(bezier_param, &dynamic_points[0].x);
+			// bezier_camera_param;
+			// glm::vec3 last_cam_point = get_bezier_points(bezier_param, &dynamic_points[0].x);
+			if (bezier_camera_param >= 0.90000001)
+			{
+				cam_dest_reached = true;
+			}
+			else
+			{
+				bezier_camera_param += 0.0006;
+				glm::vec3 new_cam_point = get_bezier_points(bezier_camera_param, &dynamic_camera_points[0].x);
+				std::cout << glm::to_string(new_cam_point - fpsCamera.getPosition()) << std::endl;
+				fpsCamera.move(new_cam_point - fpsCamera.getPosition());
+				// std::cout << glm::to_string(new_cam_point - fpsCamera.getPosition()) << std::endl;
+			}
 		}
 		else if (respawn_scene && fpsCamera.getPosition().z <= campos.z)
 		{
@@ -101,7 +117,7 @@ int main()
 				}
 				else
 				{
-					bezier_param += 0.01;
+					bezier_param += 0.001;
 				}
 				// }
 				// else

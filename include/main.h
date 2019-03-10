@@ -44,8 +44,12 @@ float Blend[16] = {
     -1.0f, 3.0f, -3.0f, 1.0f};
 glm::mat4 blend_mat = glm::make_mat4(Blend);
 std::vector<glm::vec3> dynamic_points;
+std::vector<glm::vec3> dynamic_camera_points;
 double bezier_param = 0.0;
+double bezier_camera_param = 0.0;
 glm::vec3 initial_ball_position(-0.0f, 1.25f, 80.0f);
+bool cam_dest_reached = false;
+bool cam_start = false;
 
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -186,7 +190,11 @@ bool initOpenGL()
     // Define the viewport dimensions
     glViewport(0, 0, gWindowWidth, gWindowHeight);
     glEnable(GL_DEPTH_TEST);
-
+    //setup camera points
+    dynamic_camera_points.push_back(campos);
+    dynamic_camera_points.push_back(glm::vec3(20.0f, 10.0f, -10.0f));
+    dynamic_camera_points.push_back(glm::vec3(0.0f, 20.0f, -20.0f));
+    dynamic_camera_points.push_back(glm::vec3(-50.0f, 50.0f, 0.0f));
     return true;
 }
 
@@ -331,6 +339,7 @@ void update(double elapsedTime)
     }
     else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS && !hit_ball)
     {
+        cam_start = true;
         release_ball = true;
         if (respawn_scene)
         {
