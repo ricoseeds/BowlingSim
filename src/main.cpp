@@ -45,27 +45,27 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		if (!cam_dest_reached && cam_start)
 		{
-			// fpsCamera.move(glm::vec3(0.0f, -0.4f, -0.8f));
-			// fpsCamera.move(glm::vec3(0.0f, -0.4f, -0.8f));
-			// modelPos[i] = get_bezier_points(bezier_param, &dynamic_points[0].x);
-			// bezier_camera_param;
-			// glm::vec3 last_cam_point = get_bezier_points(bezier_param, &dynamic_points[0].x);
 			if (bezier_camera_param >= 0.90000001)
 			{
 				cam_dest_reached = true;
+				cam_start = false;
+				bezier_camera_param = 1.0;
 			}
 			else
 			{
 				bezier_camera_param += 0.0006;
 				glm::vec3 new_cam_point = get_bezier_points(bezier_camera_param, &dynamic_camera_points[0].x);
-				std::cout << glm::to_string(new_cam_point - fpsCamera.getPosition()) << std::endl;
 				fpsCamera.move(new_cam_point - fpsCamera.getPosition());
-				// std::cout << glm::to_string(new_cam_point - fpsCamera.getPosition()) << std::endl;
 			}
 		}
-		else if (respawn_scene && fpsCamera.getPosition().z <= campos.z)
+		else if (respawn_scene && bezier_camera_param > 0)
 		{
-			fpsCamera.move(glm::vec3(0.0f, 0.4f, 0.8f));
+			bezier_camera_param -= 0.006;
+			glm::vec3 new_cam_point = get_bezier_points(bezier_camera_param, &dynamic_camera_points[0].x);
+			// fpsCamera.move(fpsCamera.getPosition() );
+			fpsCamera.move(new_cam_point - fpsCamera.getPosition());
+
+			// fpsCamera.move(glm::vec3(0.0f, 0.4f, 0.8f));
 		}
 
 		glm::mat4 model(1.0), view(1.0), projection(1.0);

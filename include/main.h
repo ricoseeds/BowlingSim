@@ -66,6 +66,7 @@ void setupScene();
 void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
 float clip(float n, float lower, float upper);
 glm::vec3 get_bezier_points(double t, float *point_array);
+float RandomFloat(float a, float b);
 
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
@@ -78,7 +79,7 @@ Texture2D texture[numModels];
 // Scene Model positions
 glm::vec3 modelPos[] = {
 
-    glm::vec3(5.0f, 0.0f, 0.0f),   // floor
+    glm::vec3(8.0f, 0.0f, 0.0f),   // floor
     glm::vec3(0.0f, 0.0f, 0.0f),   // pin
     glm::vec3(-1.0f, 0.0f, -1.0f), // pin
     glm::vec3(1.0f, 0.0f, -1.0f),  // pin
@@ -192,9 +193,9 @@ bool initOpenGL()
     glEnable(GL_DEPTH_TEST);
     //setup camera points
     dynamic_camera_points.push_back(campos);
-    dynamic_camera_points.push_back(glm::vec3(20.0f, 10.0f, -10.0f));
-    dynamic_camera_points.push_back(glm::vec3(0.0f, 20.0f, -20.0f));
-    dynamic_camera_points.push_back(glm::vec3(-50.0f, 50.0f, 0.0f));
+    dynamic_camera_points.push_back(glm::vec3(80.0f, 10.0f, -10.0f));
+    dynamic_camera_points.push_back(glm::vec3(0.0f, 20.0f, -40.0f));
+    dynamic_camera_points.push_back(glm::vec3(-50.0f, 100.0f, 0.0f));
     return true;
 }
 
@@ -206,7 +207,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GL_TRUE);
 
-    if (key == GLFW_KEY_F1 && action == GLFW_PRESS)
+    if (key == GLFW_KEY_G && action == GLFW_PRESS)
     {
         gWireframe = !gWireframe;
         if (gWireframe)
@@ -229,6 +230,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         bezier_param = 0.0;
         dynamic_points.clear();
         ball_dir_left_or_right = 0.0;
+        cam_dest_reached = false;
     }
 }
 
@@ -297,7 +299,7 @@ void update(double elapsedTime)
     else if (glfwGetKey(gWindow, GLFW_KEY_X) == GLFW_PRESS)
         fpsCamera.move(MOVE_SPEED * (float)elapsedTime * -glm::vec3(0.0f, 1.0f, 0.0f));
 
-    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS && !release_ball)
+    if (glfwGetKey(gWindow, GLFW_KEY_LEFT) == GLFW_PRESS && !release_ball && !hit_ball)
     {
         if (respawn_scene)
         {
@@ -317,7 +319,7 @@ void update(double elapsedTime)
             modelPos[11].x = ball_dir_left_or_right;
         }
     }
-    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS && !release_ball)
+    else if (glfwGetKey(gWindow, GLFW_KEY_RIGHT) == GLFW_PRESS && !release_ball && !hit_ball)
     {
         if (respawn_scene)
         {
@@ -493,4 +495,11 @@ glm::vec3 get_bezier_points(double t, float *point_array)
     // float *point_array = &dynamic_points[0].x;
     glm::mat4x3 control_p = glm::make_mat4x3(point_array);
     return control_p * blend_mat * glm::vec4(1.0f, t, t * t, t * t * t);
+}
+float RandomFloat(float a, float b)
+{
+    float random = ((float)rand()) / (float)RAND_MAX;
+    float diff = b - a;
+    float r = random * diff;
+    return a + r;
 }
