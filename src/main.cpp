@@ -92,11 +92,12 @@ int main()
 			{
 				// if (modelPos[i].x != 0.0)
 				// {
-				modelPos[i] = get_bezier_points(bezier_param);
+				modelPos[i] = get_bezier_points(bezier_param, &dynamic_points[0].x);
 				model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(glfwGetTime() * 1000.0f)), glm::vec3(1.0f, 0.0f, 1.0f));
 				if (bezier_param >= 0.90000001)
 				{
 					release_ball = false;
+					hit_ball = true;
 				}
 				else
 				{

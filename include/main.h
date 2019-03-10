@@ -29,6 +29,7 @@ static bool mac_moved = false;
 double ball_dir_left_or_right = 0.0;
 double ball_speed = 0.0;
 bool release_ball = false;
+bool hit_ball = false;
 bool respawn_scene = false;
 double speed_factor = -0.2f;
 glm::vec3 campos(0.000000, 40.879349, 140.000000);
@@ -60,7 +61,7 @@ void drawFloor(Mesh mesh, ShaderProgram lightingShader, Texture2D texture, glm::
 void setupScene();
 void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
 float clip(float n, float lower, float upper);
-glm::vec3 get_bezier_points(double t);
+glm::vec3 get_bezier_points(double t, float *point_array);
 
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
@@ -216,6 +217,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         respawn_scene = true;
         modelPos[11] = initial_ball_position;
         release_ball = false;
+        hit_ball = false;
         bezier_param = 0.0;
         dynamic_points.clear();
         ball_dir_left_or_right = 0.0;
@@ -327,7 +329,7 @@ void update(double elapsedTime)
             modelPos[11].x = ball_dir_left_or_right;
         }
     }
-    else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS)
+    else if (glfwGetKey(gWindow, GLFW_KEY_UP) == GLFW_PRESS && !hit_ball)
     {
         release_ball = true;
         if (respawn_scene)
@@ -477,9 +479,9 @@ void setUpSpotLight(ShaderProgram lightingShader)
     lightingShader.setUniform("spotLight.exponent", 0.017f);
     lightingShader.setUniform("spotLight.on", gFlashlightOn);
 }
-glm::vec3 get_bezier_points(double t)
+glm::vec3 get_bezier_points(double t, float *point_array)
 {
-    float *point_array = &dynamic_points[0].x;
+    // float *point_array = &dynamic_points[0].x;
     glm::mat4x3 control_p = glm::make_mat4x3(point_array);
     return control_p * blend_mat * glm::vec4(1.0f, t, t * t, t * t * t);
 }
