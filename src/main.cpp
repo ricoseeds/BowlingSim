@@ -47,40 +47,42 @@ int main()
 
 		// Clear the screen
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		if (!cam_dest_reached && cam_start)
+		if (follow_cam)
 		{
-			if (bezier_camera_param >= 0.90000001)
+			if (!cam_dest_reached && cam_start)
 			{
-				cam_dest_reached = true;
-				cam_start = false;
-				bezier_camera_param = 1.0;
+				if (bezier_camera_param >= 0.90000001)
+				{
+					cam_dest_reached = true;
+					cam_start = false;
+					bezier_camera_param = 1.0;
+				}
+				else
+				{
+					bezier_camera_param += 0.0006;
+					glm::vec3 new_cam_point = get_bezier_points(bezier_camera_param, &dynamic_camera_points[0].x);
+					fpsCamera.move(new_cam_point - fpsCamera.getPosition());
+				}
 			}
-			else
+			else if (cam_dest_reached)
 			{
-				bezier_camera_param += 0.0006;
+				// std::cout << fpsCamera.getFOV() << std::endl;
+				if (fpsCamera.getFOV() >= 18.0f)
+				{
+					fpsCamera.bumpFOV(-0.03);
+				}
+			}
+
+			else if (respawn_scene && bezier_camera_param > 0)
+			{
+				bezier_camera_param -= 0.006;
 				glm::vec3 new_cam_point = get_bezier_points(bezier_camera_param, &dynamic_camera_points[0].x);
+				// fpsCamera.move(fpsCamera.getPosition() );
 				fpsCamera.move(new_cam_point - fpsCamera.getPosition());
+
+				// fpsCamera.move(glm::vec3(0.0f, 0.4f, 0.8f));
 			}
 		}
-		else if (cam_dest_reached)
-		{
-			// std::cout << fpsCamera.getFOV() << std::endl;
-			if (fpsCamera.getFOV() >= 18.0f)
-			{
-				fpsCamera.bumpFOV(-0.03);
-			}
-		}
-
-		else if (respawn_scene && bezier_camera_param > 0)
-		{
-			bezier_camera_param -= 0.006;
-			glm::vec3 new_cam_point = get_bezier_points(bezier_camera_param, &dynamic_camera_points[0].x);
-			// fpsCamera.move(fpsCamera.getPosition() );
-			fpsCamera.move(new_cam_point - fpsCamera.getPosition());
-
-			// fpsCamera.move(glm::vec3(0.0f, 0.4f, 0.8f));
-		}
-
 		glm::mat4 model(1.0), view(1.0), projection(1.0);
 
 		// Create the View matrix
@@ -184,8 +186,122 @@ int main()
 				}
 				else if (i >= 1 && i < 11)
 				{
-					modelPos[i] += glm::vec3(0, 0, -0.1);
-					model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
+					std::cout << angle_solve << std::endl;
+					angle_solve = (angle_solve < 820) ? angle_solve++ : 820;
+					// 	for (size_t i = 1; i < 11; i++)
+					// 	{
+					// 		// modelPos[i] += glm::vec3(0, 0, -0.1);
+					switch (i)
+					{
+					case 1:
+						// pin_1_velocity -= clip(pin_1_velocity - 0.01, 0.0f, INT16_MAX);
+						pin_1_velocity -= 0.001;
+						if (pin_1_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(-0.01, 0, -pin_1_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						break;
+					case 2:
+						pin_2_velocity -= 0.001;
+						if (pin_2_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0.06, 0, -pin_2_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						break;
+					case 3:
+						pin_3_velocity -= 0.001;
+						if (pin_3_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(-0.07, 0, -pin_3_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_3_velocity);
+						break;
+					case 4:
+						pin_4_velocity -= 0.001;
+						if (pin_4_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0.1, 0, -pin_4_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_4_velocity);
+						break;
+					case 5:
+						pin_5_velocity -= 0.001;
+						if (pin_5_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(-0.09, 0, -pin_5_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_5_velocity);
+						break;
+					case 6:
+						pin_6_velocity -= 0.001;
+						if (pin_6_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0, 0, -pin_6_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_6_velocity);
+						break;
+					case 7:
+						pin_7_velocity -= 0.001;
+						if (pin_7_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0, 0, -pin_7_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_7_velocity);
+						break;
+					case 8:
+						pin_8_velocity -= 0.001;
+						if (pin_8_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0, 0, -pin_8_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_8_velocity);
+						break;
+					case 9:
+						pin_9_velocity -= 0.001;
+						if (pin_9_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0, 0, -pin_9_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_9_velocity);
+						break;
+					case 10:
+						pin_10_velocity -= 0.001;
+						if (pin_10_velocity > 0)
+						{
+							modelPos[i] += glm::vec3(0, 0, -pin_10_velocity);
+						}
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+
+						// modelPos[i] += glm::vec3(0, 0, -pin_10_velocity);
+						break;
+					}
+					// modelPos[i] += glm::vec3(0, 0, -0.1);
+					// std::cout << angle_solve << std::endl;
+					// angle_solve = (angle_solve < 820) ? angle_solve++ : 820;
+
+					// model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+					// 	}
+
+					// modelPos[i] += glm::vec3(0, 0, -0.1);
+					// model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 				}
 			}
 

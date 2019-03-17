@@ -18,7 +18,17 @@
 #include "../include/Camera.h"
 #include "../include/Mesh.h"
 
-#define BALL_ACCELERATION 0.08
+#define BALL_ACCELERATION 0.1
+#define PIN_1_VELOCITY 0.1
+#define PIN_2_VELOCITY 0.01
+#define PIN_3_VELOCITY 0.08
+#define PIN_4_VELOCITY 0.1
+#define PIN_5_VELOCITY 0.08
+#define PIN_6_VELOCITY 0.031
+#define PIN_7_VELOCITY 0.31
+#define PIN_8_VELOCITY 0.41
+#define PIN_9_VELOCITY 0.1
+#define PIN_10_VELOCITY 0.1
 #define MUS_PATH_BALL "/Users/arghachakraborty/Projects/BowlingSimulation/sounds/bowling1.wav"
 #define MUS_PATH_PIN_HIT "/Users/arghachakraborty/Projects/BowlingSimulation/sounds/bowling2.wav"
 
@@ -58,8 +68,21 @@ bool cam_start = false;
 double ball_acceleration = BALL_ACCELERATION;
 bool ball_in_motion = false;
 bool hit_pin = false;
+bool follow_cam = false;
+double pin_1_velocity = PIN_1_VELOCITY;
+double pin_2_velocity = PIN_2_VELOCITY;
+double pin_3_velocity = PIN_3_VELOCITY;
+double pin_4_velocity = PIN_4_VELOCITY;
+double pin_5_velocity = PIN_5_VELOCITY;
+double pin_6_velocity = PIN_6_VELOCITY;
+double pin_7_velocity = PIN_7_VELOCITY;
+double pin_8_velocity = PIN_8_VELOCITY;
+double pin_9_velocity = PIN_9_VELOCITY;
+double pin_10_velocity = PIN_10_VELOCITY;
+double angle_solve = 0;
 // variable declarations SDL
-static Uint8 *audio_pos;       // global pointer to the audio buffer to be played
+static Uint8 *
+    audio_pos;                 // global pointer to the audio buffer to be played
 static Uint32 audio_len;       // remaining length of the sample we have to play
 static Uint32 wav_length;      // length of our sample
 static Uint8 *wav_buffer;      // buffer containing our audio file
@@ -261,6 +284,11 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         // toggle the flashlight
         gFlashlightOn = !gFlashlightOn;
     }
+    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
+    {
+        // toggle the flashlight
+        follow_cam = !follow_cam;
+    }
     if (key == GLFW_KEY_R && action == GLFW_PRESS)
     {
         respawn_scene = true;
@@ -275,6 +303,26 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         ball_in_motion = false;
         fpsCamera.setFOV(45.0f);
         hit_pin = false;
+        modelPos[1] = glm::vec3(0.0f, 0.0f, 0.0f);
+        modelPos[2] = glm::vec3(-1.0f, 0.0f, -1.0f);
+        modelPos[3] = glm::vec3(1.0f, 0.0f, -1.0f);
+        modelPos[4] = glm::vec3(-2.0f, 0.0f, -2.0f);
+        modelPos[5] = glm::vec3(0.0f, 0.0f, -2.0f);
+        modelPos[6] = glm::vec3(2.0f, 0.0f, -2.0f);
+        modelPos[7] = glm::vec3(-3.0f, 0.0f, -3.0f);
+        modelPos[8] = glm::vec3(-1.0f, 0.0f, -3.0f);
+        modelPos[9] = glm::vec3(1.0f, 0.0f, -3.0f);
+        modelPos[10] = glm::vec3(3.0f, 0.0f, -3.0f);
+        pin_1_velocity = PIN_1_VELOCITY;
+        pin_2_velocity = PIN_2_VELOCITY;
+        pin_3_velocity = PIN_3_VELOCITY;
+        pin_4_velocity = PIN_4_VELOCITY;
+        pin_5_velocity = PIN_5_VELOCITY;
+        pin_6_velocity = PIN_6_VELOCITY;
+        pin_7_velocity = PIN_7_VELOCITY;
+        pin_8_velocity = PIN_8_VELOCITY;
+        pin_9_velocity = PIN_9_VELOCITY;
+        pin_10_velocity = PIN_10_VELOCITY;
         // audio_pos = wav_buffer; // copy sound buffer
         // audio_len = wav_length;
     }
