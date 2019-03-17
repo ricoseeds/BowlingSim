@@ -182,8 +182,9 @@ int main()
 						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 					}
 				}
-				else // for the pins
+				else if (i >= 1 && i < 11)
 				{
+					modelPos[i] += glm::vec3(0, 0, -0.1);
 					model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 				}
 			}
