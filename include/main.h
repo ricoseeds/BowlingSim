@@ -57,6 +57,7 @@ bool cam_dest_reached = false;
 bool cam_start = false;
 double ball_acceleration = BALL_ACCELERATION;
 bool ball_in_motion = false;
+bool hit_pin = false;
 // variable declarations SDL
 static Uint8 *audio_pos;       // global pointer to the audio buffer to be played
 static Uint32 audio_len;       // remaining length of the sample we have to play
@@ -273,6 +274,9 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         ball_acceleration = BALL_ACCELERATION;
         ball_in_motion = false;
         fpsCamera.setFOV(45.0f);
+        hit_pin = false;
+        // audio_pos = wav_buffer; // copy sound buffer
+        // audio_len = wav_length;
     }
 }
 
@@ -386,6 +390,8 @@ void update(double elapsedTime)
         cam_start = true;
         release_ball = true;
         ball_in_motion = true;
+        audio_pos = wav_buffer; // copy sound buffer
+        audio_len = wav_length;
         if (respawn_scene)
         {
             respawn_scene = false;
@@ -553,14 +559,17 @@ void my_audio_callback(void *userdata, Uint8 *stream, int len)
     if (audio_len == 0)
         return;
 
-    len = (len > audio_len ? audio_len : len);
-    //SDL_memcpy (stream, audio_pos, len);
-    // simply copy from one buffer into the other
-    // std::cout << audio_pos;
-    SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME); // mix from one buffer into another
+    if (hit_pin)
+    {
+        len = (len > audio_len ? audio_len : len);
+        //SDL_memcpy (stream, audio_pos, len);
+        // simply copy from one buffer into the other
+        // std::cout << audio_pos;
+        SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME); // mix from one buffer into another
 
-    audio_pos += len;
-    audio_len -= len;
+        audio_pos += len;
+        audio_len -= len;
+    }
     // std::cout << audio_pos;
     // std::cout << audio_len;
 }

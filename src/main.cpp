@@ -114,10 +114,10 @@ int main()
 		// std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
 
 		// draw rest of the meshes shader is same for all
-		if (hit_ball)
-		{
-			SDL_PauseAudio(0);
-		}
+		// if (hit_pin)
+		// {
+		// 	SDL_PauseAudio(0);
+		// }
 
 		for (int i = 1; i < numModels; i++)
 		{
@@ -131,6 +131,9 @@ int main()
 				{
 					release_ball = false;
 					hit_ball = true;
+					hit_pin = true;
+					std::cout << bezier_param << std::endl;
+					SDL_PauseAudio(0);
 				}
 				else
 				{
