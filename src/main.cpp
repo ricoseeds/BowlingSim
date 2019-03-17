@@ -58,6 +58,14 @@ int main()
 				fpsCamera.move(new_cam_point - fpsCamera.getPosition());
 			}
 		}
+		else if (cam_dest_reached)
+		{
+			// std::cout << fpsCamera.getFOV() << std::endl;
+			if (fpsCamera.getFOV() >= 18.0f)
+			{
+				fpsCamera.bumpFOV(-0.03);
+			}
+		}
 
 		else if (respawn_scene && bezier_camera_param > 0)
 		{
@@ -163,7 +171,7 @@ int main()
 						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 					}
 				}
-				else
+				else // for the pins
 				{
 					model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]);
 				}

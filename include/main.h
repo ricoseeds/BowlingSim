@@ -11,11 +11,14 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include <glm/gtx/string_cast.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <SDL2/SDL.h>
 
 #include "../include/ShaderProgram.h"
 #include "../include/Texture2D.h"
 #include "../include/Camera.h"
 #include "../include/Mesh.h"
+
+#define BALL_ACCELERATION 0.08
 
 // Global Variables
 const char *APP_TITLE = "Bowling simulation";
@@ -50,7 +53,7 @@ double bezier_camera_param = 0.0;
 glm::vec3 initial_ball_position(-0.0f, 1.25f, 80.0f);
 bool cam_dest_reached = false;
 bool cam_start = false;
-double ball_acceleration = 0.08;
+double ball_acceleration = BALL_ACCELERATION;
 bool ball_in_motion = false;
 
 // Function prototypes
@@ -69,6 +72,10 @@ void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
 float clip(float n, float lower, float upper);
 glm::vec3 get_bezier_points(double t, float *point_array);
 float RandomFloat(float a, float b);
+
+// variable declarations SDL
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
+static Uint32 audio_len; // remaining length of the sample we have to play
 
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
@@ -233,7 +240,9 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         dynamic_points.clear();
         ball_dir_left_or_right = 0.0;
         cam_dest_reached = false;
+        ball_acceleration = BALL_ACCELERATION;
         ball_in_motion = false;
+        fpsCamera.setFOV(45.0f);
     }
 }
 

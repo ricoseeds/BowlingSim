@@ -12,7 +12,7 @@
 //--------------------------------------------------------------
 class Camera
 {
-public:
+  public:
 	glm::mat4 getViewMatrix() const;
 
 	virtual void setPosition(const glm::vec3 &position) {}
@@ -25,9 +25,10 @@ public:
 	const glm::vec3 &getPosition() const;
 
 	float getFOV() const { return mFOV; }
-	void setFOV(float fov) { mFOV = fov; } // in degrees
+	void setFOV(float fov);
+	void bumpFOV(float);
 
-protected:
+  protected:
 	Camera();
 
 	virtual void updateCameraVectors() {}
@@ -52,7 +53,7 @@ protected:
 //--------------------------------------------------------------
 class FPSCamera : public Camera
 {
-public:
+  public:
 	// FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = glm::pi<float>(), float pitch = 0.0f); // (yaw) initial angle faces -Z
 	FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f));
 	//   FPSCamera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 target = glm::vec3(0.0f, 0.0f, 0.0f), float yaw = glm::pi<float>(), float pitch = 0.0f);
@@ -61,29 +62,8 @@ public:
 	virtual void move(const glm::vec3 &offsetPos);
 	void setLookAt(const glm::vec3 &target);
 
-private:
+  private:
 	void updateCameraVectors();
 	bool dirflag;
 };
-
-//--------------------------------------------------------------
-// Orbit Camera Class
-//--------------------------------------------------------------
-class OrbitCamera : public Camera
-{
-public:
-	OrbitCamera();
-
-	virtual void rotate(float yaw, float pitch); // in degrees
-
-	// Camera Controls
-	void setLookAt(const glm::vec3 &target);
-	void setRadius(float radius);
-
-private:
-	void updateCameraVectors();
-
-	// Camera parameters
-	float mRadius;
-};
-#endif //CAMERA_H
+#endif
