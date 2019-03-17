@@ -50,6 +50,8 @@ double bezier_camera_param = 0.0;
 glm::vec3 initial_ball_position(-0.0f, 1.25f, 80.0f);
 bool cam_dest_reached = false;
 bool cam_start = false;
+double ball_acceleration = 0.08;
+bool ball_in_motion = false;
 
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -183,8 +185,8 @@ bool initOpenGL()
     glfwSetScrollCallback(gWindow, glfw_onMouseScroll);
 
     // Hides and grabs cursor, unlimited movement
-    glfwSetInputMode(gWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPos(gWindow, gWindowWidth / 2.0, gWindowHeight / 2.0);
+    // glfwSetInputMode(gWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    // glfwSetCursorPos(gWindow, gWindowWidth / 2.0, gWindowHeight / 2.0);
 
     glClearColor(gClearColor.r, gClearColor.g, gClearColor.b, gClearColor.a);
 
@@ -231,6 +233,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         dynamic_points.clear();
         ball_dir_left_or_right = 0.0;
         cam_dest_reached = false;
+        ball_in_motion = false;
     }
 }
 
@@ -277,7 +280,7 @@ void update(double elapsedTime)
     // fpsCamera.rotate((float)(gWindowWidth / 2.0 - mouseX) * MOUSE_SENSITIVITY, (float)(gWindowHeight / 2.0 - mouseY) * MOUSE_SENSITIVITY);
 
     // Clamp mouse cursor to center of screen
-    glfwSetCursorPos(gWindow, gWindowWidth / 2.0, gWindowHeight / 2.0);
+    // glfwSetCursorPos(gWindow, gWindowWidth / 2.0, gWindowHeight / 2.0);
 
     // Camera FPS movement
 
@@ -343,6 +346,7 @@ void update(double elapsedTime)
     {
         cam_start = true;
         release_ball = true;
+        ball_in_motion = true;
         if (respawn_scene)
         {
             respawn_scene = false;
