@@ -20,9 +20,9 @@
 
 #define BALL_ACCELERATION 0.1
 #define PIN_1_VELOCITY 0.1
-#define PIN_2_VELOCITY 0.01
-#define PIN_3_VELOCITY 0.08
-#define PIN_4_VELOCITY 0.1
+#define PIN_2_VELOCITY 0.09
+#define PIN_3_VELOCITY 0.099
+#define PIN_4_VELOCITY 0.2
 #define PIN_5_VELOCITY 0.08
 #define PIN_6_VELOCITY 0.031
 #define PIN_7_VELOCITY 0.31
@@ -120,16 +120,16 @@ Texture2D texture[numModels];
 glm::vec3 modelPos[] = {
 
     glm::vec3(8.0f, 0.0f, 0.0f),   // floor
-    glm::vec3(0.0f, 0.0f, 0.0f),   // pin
-    glm::vec3(-1.0f, 0.0f, -1.0f), // pin
-    glm::vec3(1.0f, 0.0f, -1.0f),  // pin
-    glm::vec3(-2.0f, 0.0f, -2.0f), // pin
-    glm::vec3(0.0f, 0.0f, -2.0f),  // pin
-    glm::vec3(2.0f, 0.0f, -2.0f),  // pin
-    glm::vec3(-3.0f, 0.0f, -3.0f), // pin
-    glm::vec3(-1.0f, 0.0f, -3.0f), // pin
-    glm::vec3(1.0f, 0.0f, -3.0f),  // pin
-    glm::vec3(3.0f, 0.0f, -3.0f),  // pin
+    glm::vec3(0.0f, 1.2f, 0.0f),   // pin
+    glm::vec3(-1.0f, 1.2f, -1.0f), // pin
+    glm::vec3(1.0f, 1.2f, -1.0f),  // pin
+    glm::vec3(-2.0f, 1.2f, -2.0f), // pin
+    glm::vec3(0.0f, 1.2f, -2.0f),  // pin
+    glm::vec3(2.0f, 1.2f, -2.0f),  // pin
+    glm::vec3(-3.0f, 1.2f, -3.0f), // pin
+    glm::vec3(-1.0f, 1.2f, -3.0f), // pin
+    glm::vec3(1.0f, 1.2f, -3.0f),  // pin
+    glm::vec3(3.0f, 1.2f, -3.0f),  // pin
     initial_ball_position          // ball // origin of the ball
 
 };

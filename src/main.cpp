@@ -187,7 +187,7 @@ int main()
 				else if (i >= 1 && i < 11)
 				{
 					std::cout << angle_solve << std::endl;
-					angle_solve = (angle_solve < 820) ? angle_solve++ : 820;
+					angle_solve = (angle_solve < 980) ? angle_solve++ : 980;
 					// 	for (size_t i = 1; i < 11; i++)
 					// 	{
 					// 		// modelPos[i] += glm::vec3(0, 0, -0.1);
@@ -200,7 +200,7 @@ int main()
 						{
 							modelPos[i] += glm::vec3(-0.01, 0, -pin_1_velocity);
 						}
-						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(0.0f, 0.0f, 1.0f));
 
 						break;
 					case 2:
@@ -209,7 +209,7 @@ int main()
 						{
 							modelPos[i] += glm::vec3(0.06, 0, -pin_2_velocity);
 						}
-						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 1.0f, 0.0f));
 
 						break;
 					case 3:
@@ -248,7 +248,7 @@ int main()
 						{
 							modelPos[i] += glm::vec3(0, 0, -pin_6_velocity);
 						}
-						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 1.0f, 0.0f));
 
 						// modelPos[i] += glm::vec3(0, 0, -pin_6_velocity);
 						break;
@@ -268,7 +268,7 @@ int main()
 						{
 							modelPos[i] += glm::vec3(0, 0, -pin_8_velocity);
 						}
-						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 0.0f));
 
 						// modelPos[i] += glm::vec3(0, 0, -pin_8_velocity);
 						break;
@@ -278,7 +278,7 @@ int main()
 						{
 							modelPos[i] += glm::vec3(0, 0, -pin_9_velocity);
 						}
-						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(0.0f, 1.0f, 1.0f));
 
 						// modelPos[i] += glm::vec3(0, 0, -pin_9_velocity);
 						break;
@@ -288,7 +288,7 @@ int main()
 						{
 							modelPos[i] += glm::vec3(0, 0, -pin_10_velocity);
 						}
-						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 0.0f, 1.0f));
+						model = glm::translate(glm::mat4(1.0), modelPos[i]) * glm::scale(glm::mat4(1.0), modelScale[i]) * glm::rotate(glm::mat4(1.0), glm::radians((float)(angle_solve++ * 0.1f)), glm::vec3(1.0f, 1.0f, 0.0f));
 
 						// modelPos[i] += glm::vec3(0, 0, -pin_10_velocity);
 						break;
