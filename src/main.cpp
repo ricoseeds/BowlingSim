@@ -186,7 +186,6 @@ int main()
 				}
 				else if (i >= 1 && i < 11)
 				{
-					std::cout << angle_solve << std::endl;
 					angle_solve = (angle_solve < 980) ? angle_solve++ : 980;
 					// 	for (size_t i = 1; i < 11; i++)
 					// 	{

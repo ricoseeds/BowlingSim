@@ -81,8 +81,7 @@ double pin_9_velocity = PIN_9_VELOCITY;
 double pin_10_velocity = PIN_10_VELOCITY;
 double angle_solve = 0;
 // variable declarations SDL
-static Uint8 *
-    audio_pos;                 // global pointer to the audio buffer to be played
+static Uint8 *audio_pos;       // global pointer to the audio buffer to be played
 static Uint32 audio_len;       // remaining length of the sample we have to play
 static Uint32 wav_length;      // length of our sample
 static Uint8 *wav_buffer;      // buffer containing our audio file
@@ -323,6 +322,7 @@ void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode)
         pin_8_velocity = PIN_8_VELOCITY;
         pin_9_velocity = PIN_9_VELOCITY;
         pin_10_velocity = PIN_10_VELOCITY;
+        angle_solve = 0.0f;
         // audio_pos = wav_buffer; // copy sound buffer
         // audio_len = wav_length;
     }
