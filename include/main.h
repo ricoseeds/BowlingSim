@@ -19,6 +19,8 @@
 #include "../include/Mesh.h"
 
 #define BALL_ACCELERATION 0.08
+#define MUS_PATH_BALL "/Users/arghachakraborty/Projects/BowlingSimulation/sounds/bowling1.wav"
+#define MUS_PATH_PIN_HIT "/Users/arghachakraborty/Projects/BowlingSimulation/sounds/bowling2.wav"
 
 // Global Variables
 const char *APP_TITLE = "Bowling simulation";
@@ -55,6 +57,12 @@ bool cam_dest_reached = false;
 bool cam_start = false;
 double ball_acceleration = BALL_ACCELERATION;
 bool ball_in_motion = false;
+// variable declarations SDL
+static Uint8 *audio_pos;       // global pointer to the audio buffer to be played
+static Uint32 audio_len;       // remaining length of the sample we have to play
+static Uint32 wav_length;      // length of our sample
+static Uint8 *wav_buffer;      // buffer containing our audio file
+static SDL_AudioSpec wav_spec; // the specs of our piece of music
 
 // Function prototypes
 void glfw_onKey(GLFWwindow *window, int key, int scancode, int action, int mode);
@@ -72,10 +80,9 @@ void renderFloor(glm::mat4 model, ShaderProgram lightingShader);
 float clip(float n, float lower, float upper);
 glm::vec3 get_bezier_points(double t, float *point_array);
 float RandomFloat(float a, float b);
-
-// variable declarations SDL
-static Uint8 *audio_pos; // global pointer to the audio buffer to be played
-static Uint32 audio_len; // remaining length of the sample we have to play
+// prototype for our audio callback
+// see the implementation for more information
+void my_audio_callback(void *userdata, Uint8 *stream, int len);
 
 //-----------------------------------------------------------------------------
 // Initialize GLFW and OpenGL
@@ -149,7 +156,30 @@ void setupScene()
     texture[10].loadTexture("textures/AMF.tga", true);
     texture[11].loadTexture("textures/marble_ball.png", true);
 }
+bool initSDL()
+{
+    if (SDL_Init(SDL_INIT_AUDIO) < 0)
+        return false;
+    if (SDL_LoadWAV(MUS_PATH_PIN_HIT, &wav_spec, &wav_buffer, &wav_length) == NULL)
+    {
+        return false;
+    }
+    // set the callback function
+    wav_spec.callback = my_audio_callback;
+    wav_spec.userdata = NULL;
+    // set our global static variables
+    audio_pos = wav_buffer; // copy sound buffer
+    audio_len = wav_length; // copy file length
 
+    /* Open the audio device */
+    if (SDL_OpenAudio(&wav_spec, NULL) < 0)
+    {
+        fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
+        exit(-1);
+    }
+
+    return true;
+}
 bool initOpenGL()
 {
     // Intialize GLFW
@@ -515,4 +545,22 @@ float RandomFloat(float a, float b)
     float diff = b - a;
     float r = random * diff;
     return a + r;
+}
+void my_audio_callback(void *userdata, Uint8 *stream, int len)
+{
+    // std::cout << len << std::endl;
+
+    if (audio_len == 0)
+        return;
+
+    len = (len > audio_len ? audio_len : len);
+    //SDL_memcpy (stream, audio_pos, len);
+    // simply copy from one buffer into the other
+    // std::cout << audio_pos;
+    SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME); // mix from one buffer into another
+
+    audio_pos += len;
+    audio_len -= len;
+    // std::cout << audio_pos;
+    // std::cout << audio_len;
 }

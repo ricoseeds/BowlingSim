@@ -8,6 +8,10 @@ int main()
 	// fpsCamera.setLookAt(glm::normalize(glm::vec3(-30.012413, -430.210178, -230.977584)));
 	// std::cout << "INITCAM" << std::endl;
 	// std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
+	if (!initSDL())
+	{
+		std::cerr << "SDL initialization failed" << std::endl;
+	}
 
 	if (!initOpenGL())
 	{
@@ -110,6 +114,10 @@ int main()
 		// std::cout << glm::to_string(fpsCamera.getLook()) << std::endl;
 
 		// draw rest of the meshes shader is same for all
+		if (hit_ball)
+		{
+			SDL_PauseAudio(0);
+		}
 
 		for (int i = 1; i < numModels; i++)
 		{
@@ -205,7 +213,8 @@ int main()
 	}
 
 	glfwTerminate();
-
+	SDL_CloseAudio();
+	SDL_FreeWAV(wav_buffer);
 	return 0;
 }
 void renderFloor(glm::mat4 model, ShaderProgram lightingShader)
